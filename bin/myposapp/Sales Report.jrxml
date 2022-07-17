@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales Report" pageWidth="708" pageHeight="842" columnWidth="668" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dee84573-7d93-4d14-a0fb-2692f2b88b3a">
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="mm"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="JDBC Adapter"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="Report_Date" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT DATE(Sales.Date) AS Date, Prod_Name, SUM(Quantity*Price) AS TRPU
+FROM Product_Sale,Sales
+WHERE Sales.ID = Product_Sale.Sales_ID AND DATE(Sales.Date) = $P{Report_Date}
+GROUP BY Date, Prod_Name]]>
+	</queryString>
+	<field name="Date" class="java.sql.Date">
+		<property name="com.jaspersoft.studio.field.name" value="Date"/>
+		<property name="com.jaspersoft.studio.field.label" value="Date"/>
+	</field>
+	<field name="Prod_Name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="Prod_Name"/>
+		<property name="com.jaspersoft.studio.field.label" value="Prod_Name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="product_sale"/>
+	</field>
+	<field name="TRPU" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="TRPU"/>
+		<property name="com.jaspersoft.studio.field.label" value="TRPU"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="531" splitType="Stretch">
+			<staticText>
+				<reportElement x="170" y="0" width="350" height="40" uuid="9a218456-afa0-4189-8f5a-200a7d20b09b"/>
+				<textElement>
+					<font size="30" isBold="true" isItalic="true" isUnderline="false"/>
+				</textElement>
+				<text><![CDATA[DAILY SALES REPORT]]></text>
+			</staticText>
+			<bar3DChart>
+				<chart evaluationTime="Report">
+					<reportElement x="0" y="90" width="670" height="420" uuid="a484af5a-4abf-4f78-9859-f486cbd672b8"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<dataset resetType="Report"/>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{Prod_Name}]]></seriesExpression>
+						<categoryExpression><![CDATA[0]]></categoryExpression>
+						<valueExpression><![CDATA[$F{TRPU}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot>
+					<plot/>
+					<itemLabel/>
+					<categoryAxisFormat>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+					</valueAxisFormat>
+				</bar3DPlot>
+			</bar3DChart>
+			<staticText>
+				<reportElement x="220" y="50" width="60" height="30" uuid="8d9916ea-cc24-4240-8d20-5ca15801d6ee"/>
+				<textElement>
+					<font size="20" isBold="true" isItalic="true"/>
+				</textElement>
+				<text><![CDATA[FOR :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="280" y="50" width="150" height="30" uuid="fd3064bd-dfda-4c86-9544-75a5dfcb3ce0"/>
+				<textElement>
+					<font size="20" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{Report_Date}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>
