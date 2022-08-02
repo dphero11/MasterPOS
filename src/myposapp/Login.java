@@ -8,7 +8,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,8 +24,6 @@ import javax.swing.border.EmptyBorder;
 
 
 
-
-
 	class Login extends JFrame {
 
 		/**
@@ -37,7 +34,7 @@ import javax.swing.border.EmptyBorder;
 		private JTextField username_textField;
 		private JPasswordField passwordField;
 
-		 static Connection con;
+		 
 		 PreparedStatement pst;
 		 ResultSet rs;
 
@@ -104,22 +101,10 @@ import javax.swing.border.EmptyBorder;
 						String txtusername = username_textField.getText();
 						String txtpassword = String.valueOf(passwordField.getPassword());
 
-						 String conurl ="jdbc:mysql://localhost:3306/AGS";
-						 String conusername ="root";
-						 String conpassword ="Hero1234";
-
-
-
-
-							 	//connect();
-
-
 
 									try {
 
-										Class.forName("com.mysql.cj.jdbc.Driver");
-
-										con =  DriverManager.getConnection(conurl, conusername, conpassword);
+									Connection con = SaleSystem.connect();
 
 										String query  = "SELECT * FROM Users WHERE `Username` = '"+txtusername+"' AND `Password` = '"+txtpassword+"' ";
 
@@ -147,14 +132,12 @@ import javax.swing.border.EmptyBorder;
 													salesys.setVisible(true);
 												}
 
-
-											//put internal frame code here...
-
+												
 										}else {
 											JOptionPane.showMessageDialog(null,"Incorrect Username or Password","Error",JOptionPane.ERROR_MESSAGE);
 										}
-									} catch (HeadlessException | SQLException | ClassNotFoundException e1) {
-										// TODO Auto-generated catch block
+									} catch (HeadlessException | SQLException e1) {
+										
 										e1.printStackTrace();
 									}
 
@@ -166,57 +149,26 @@ import javax.swing.border.EmptyBorder;
 				contentPane.add(login_btn);
 			}
 
-
-		 		static void connect() {
-
-				 String conurl ="jdbc:mysql://localhost:3306/AGS";
-				 String conusername ="root";
-				 String conpassword ="Hero1234";
-
-				try {
-					Class.forName("com.mysql.cj.jdbc.Driver");
-					con =  DriverManager.getConnection(conurl, conusername,conpassword);
-
-
-
-				} catch (ClassNotFoundException e) {
-
-					e.printStackTrace();
-
-				} catch (SQLException e) {
-
-					e.printStackTrace();
-				}
-
-			}
-
+		 		
+		 		
 
  private void logon() {
 
-
+	 	
+	 
 		String txtusername = username_textField.getText();
 		String txtpassword = String.valueOf(passwordField.getPassword());
 
-		 String conurl ="jdbc:mysql://localhost:3306/AGS";
-		 String conusername ="root";
-		 String conpassword ="Hero1234";
+				
 
+				try {
 
-
-
-			 	//connect();
-
-
-
-					try {
-
-						Class.forName("com.mysql.cj.jdbc.Driver");
-
-						con =  DriverManager.getConnection(conurl, conusername, conpassword);
+					Connection con = SaleSystem.connect();
 
 						String query  = "SELECT * FROM Users WHERE `Username` = '"+txtusername+"' AND `Password` = '"+txtpassword+"' ";
 
-
+							//con = DriverManager.getConnection();
+							
 							pst = con.prepareStatement(query);
 
 							rs = pst.executeQuery();
@@ -241,18 +193,16 @@ import javax.swing.border.EmptyBorder;
 								}
 
 
-							//put internal frame code here...
-
 						}else {
 							JOptionPane.showMessageDialog(null,"Incorrect Username or Password","Error",JOptionPane.ERROR_MESSAGE);
 						}
-					} catch (HeadlessException | SQLException | ClassNotFoundException e1) {
-						// TODO Auto-generated catch block
+						
+						con.close();
+						
+					} catch (HeadlessException | SQLException e1) {
+						
 						e1.printStackTrace();
 					}
-
-
-
 
 
  }

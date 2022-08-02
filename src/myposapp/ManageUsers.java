@@ -5,7 +5,6 @@ package myposapp;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 
 import javax.swing.JButton;
@@ -20,8 +19,6 @@ import javax.swing.WindowConstants;
 		 *
 		 */
 		private static final long serialVersionUID = 2794397404984740834L;
-
-		Connection con;
 
 		PreparedStatement delpst;
 		PreparedStatement pst1;
@@ -66,11 +63,10 @@ import javax.swing.WindowConstants;
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
-					// connection and query to delete entry where username = ?
 
 					DeleteUser  delUser = new DeleteUser();
 					delUser.setVisible(true);
-						//dispose();
+						
 
 				}
 			});
@@ -89,27 +85,12 @@ import javax.swing.WindowConstants;
 
 				}
 			});
+			
 			btnprevious.setBounds(185, 228, 203, 37);
 			umpanel.add(btnprevious);
 
 
-
-
-
 		}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	}

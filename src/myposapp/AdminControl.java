@@ -5,16 +5,13 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.HashMap;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
+import javax.swing.SwingConstants;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -28,23 +25,23 @@ import net.sourceforge.jdatepicker.impl.JDatePanelImpl;
 import net.sourceforge.jdatepicker.impl.JDatePickerImpl;
 import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
+
 	 class AdminControl extends JFrame{
 
 		/**
 		 *
 		 */
+		 
 		private static final long serialVersionUID = -5148290466842511860L;
 
 		UtilDateModel model = new UtilDateModel();
 		JDatePanelImpl dpi = new JDatePanelImpl(model);
 		JDatePickerImpl jdp = new JDatePickerImpl(dpi, new MyCal());
-		//String rep_Date = "";
 		String datee;
 
-		static Connection con;
+		Connection con;
 		int reportID;
-		Icon iconUsrMgt = new ImageIcon("/Users/user/Desktop/ImageIcons/mgmtIcon.jpg");
-
+	
 		    AdminControl() {
 
 			new JFrame("Administrator Settings");
@@ -62,11 +59,14 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 			panel.setBounds(6, 6, 608, 480);
 			getContentPane().add(panel);
 			panel.setLayout(null);
-			jdp.setSize(143, 39);
-			jdp.setLocation(6, 139);
+			jdp.getJFormattedTextField().setText("Select Date");
+			jdp.getJFormattedTextField().setEnabled(false);
+			jdp.getJFormattedTextField().setHorizontalAlignment(SwingConstants.CENTER);
+			jdp.setSize(166, 29);
+			jdp.setLocation(153, 126);
 			panel.add(jdp);
 
-			JButton btnInventory = new JButton("Inventory");
+			JButton btnInventory = new JButton(" Inventory Report");
 			btnInventory.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -77,7 +77,7 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 			});
 			btnInventory.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 			btnInventory.setBackground(Color.DARK_GRAY);
-			btnInventory.setBounds(6, 221, 117, 44);
+			btnInventory.setBounds(6, 173, 136, 44);
 			panel.add(btnInventory);
 
 			JButton btnSales = new JButton("Daily Sales");
@@ -92,7 +92,7 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 				}
 			});
 			btnSales.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-			btnSales.setBounds(150, 139, 117, 39);
+			btnSales.setBounds(6, 117, 136, 44);
 			panel.add(btnSales);
 
 			JButton btnlogout = new JButton("Logout");
@@ -107,10 +107,10 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 				}
 			});
-			btnlogout.setBounds(6, 318, 117, 44);
+			btnlogout.setBounds(6, 318, 136, 44);
 			panel.add(btnlogout);
 
-			JButton btnUsrMgt = new JButton("Manage Users",iconUsrMgt);
+			JButton btnUsrMgt = new JButton("Manage Users");
 			btnUsrMgt.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
@@ -120,39 +120,33 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 				}
 			});
 			btnUsrMgt.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-			btnUsrMgt.setBounds(6, 61, 127, 44);
+			btnUsrMgt.setBounds(6, 61, 136, 44);
 			panel.add(btnUsrMgt);
+			
+			JButton btnUpdateStock = new JButton("Update Stock");
+			btnUpdateStock.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					
+					AddInventory adinv = new AddInventory();
+					adinv.setVisible(true);
+				}
+			});
+			btnUpdateStock.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+			btnUpdateStock.setBounds(6, 231, 136, 44);
+			panel.add(btnUpdateStock);
 
 		}
 
-			static void connect() {
 
-			 String url ="jdbc:mysql://localhost:3306/AGS";
-			 String username ="root";
-			 String password ="Hero1234";
 
-			try {
-				Class.forName("com.mysql.cj.jdbc.Driver");
-				con =  DriverManager.getConnection(url, username, password);
-
-			} catch (ClassNotFoundException e) {
-
-				e.printStackTrace();
-			} catch (SQLException e) {
-
-				e.printStackTrace();
-			}
-
-		}
-
-		 void report() {
+	void report() {
 
 			HashMap<String, Object> hm = new HashMap<>();
 
 
 			try {
 
-				connect();
+				con = SaleSystem.connect();
 
 				hm.put("Invoiceno",reportID);
 
@@ -171,17 +165,14 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 		}
 
 
-
-		 void reportsales(String saledate) {
-
+	 void reportsales(String saledate) {
 
 
 				HashMap<String, Object> hm = new HashMap<>();
 
-
 				try {
 
-					connect();
+					con = SaleSystem.connect();
 
 					hm.put("Report_Date",saledate);
 
@@ -191,12 +182,11 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 					JasperViewer.viewReport(jprint,false);
 
-
 				} catch (JRException e) {
 
 					e.printStackTrace();
 				}
+				
 			}
-
-
+	 
 }

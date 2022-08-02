@@ -53,7 +53,7 @@ import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
 
- 	class SaleSystem extends JFrame {
+ class SaleSystem extends JFrame {
 
 	/**
 	 *  Declaration of variables.
@@ -92,23 +92,17 @@ import net.sf.jasperreports.view.JasperViewer;
 	static int NumCols = 4;
 	private String[] col_name = {"Description","Quantity","Price","Amount"};
 
-	Connection con;
-
+	static Connection con;
 	PreparedStatement pst;
 	PreparedStatement pst1;
 	ResultSet rs;
+	
 	int reportID;
-
-
-
 
 	Instant instant = Instant.now();
 	OffsetDateTime odt = instant.atOffset(ZoneOffset.UTC);
 
-
 	DefaultTableModel dftm = new DefaultTableModel();
-
-
 
 	/**
 	 * Create the frame.
@@ -119,12 +113,11 @@ import net.sf.jasperreports.view.JasperViewer;
 		connect();
 	}
 
-
-	  	void report() {
+	void report() {
 
 		HashMap<String, Object> hm = new HashMap<>();
 
-		connect();
+		con =  connect();
 
 
 		try {
@@ -143,8 +136,8 @@ import net.sf.jasperreports.view.JasperViewer;
 	}
 
 
-	  	void connect() {
-
+	 static Connection connect() {
+		  
 		 String url ="jdbc:mysql://localhost:3306/AGS";
 		 String username ="root";
 		 String password ="Hero1234";
@@ -153,8 +146,7 @@ import net.sf.jasperreports.view.JasperViewer;
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			con =  DriverManager.getConnection(url, username, password);
-
-
+		
 		} catch (ClassNotFoundException e) {
 
 			e.printStackTrace();
@@ -162,10 +154,11 @@ import net.sf.jasperreports.view.JasperViewer;
 
 			e.printStackTrace();
 		}
+		return con;
 
 	}
 
-	  	 void balance () {
+	   void balance () {
 
 		 int total = Integer.parseInt(txtTotal.getText());
 		 int pay = Integer.parseInt(txtPay.getText());
@@ -178,7 +171,7 @@ import net.sf.jasperreports.view.JasperViewer;
 	 *  Handles transaction.
 	 */
 
-	    void sales(){
+	   void sales(){
 
 		String subtotal = txtTotal.getText();
 		String pay = txtPay.getText();
@@ -198,7 +191,7 @@ import net.sf.jasperreports.view.JasperViewer;
 
 		}else {
 
-
+			
 			try {
 
 				String query = "INSERT INTO `Sales`(Subtotal,Pay,Balance,Date)VALUES(?,?,?,?)";
@@ -206,12 +199,10 @@ import net.sf.jasperreports.view.JasperViewer;
 				pst.setString(1,subtotal);
 				pst.setString(2,pay);
 				pst.setString(3,balance);
-				//pst.setTimestamp(4,mytime);
 				pst.setString(4,newDate);
 				pst.executeUpdate();
 
-				 rs = pst.getGeneratedKeys();
-
+				rs = pst.getGeneratedKeys();
 
 
 				if(rs.next()){
@@ -246,7 +237,8 @@ import net.sf.jasperreports.view.JasperViewer;
 							pst1.setString(5,total);
 							pst1.executeUpdate();
 				  }
-
+						
+							deductInv(); 
 
 							con.close();
 
@@ -595,19 +587,19 @@ import net.sf.jasperreports.view.JasperViewer;
 		btnLogout.setBounds(72, 370, 117, 39);
 		panel_2.add(btnLogout);
 
-
-
+		
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds(6, 169, 505, 307);
 		mainPanel.add(scrollPane);
 
+		
 		table = new JTable(NumRows,NumCols) {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
 		    public boolean isCellEditable(int NumRows, int NumCols) {
-		       //all cells false
+		       
 		       return false;
 		    }
 
@@ -623,7 +615,62 @@ import net.sf.jasperreports.view.JasperViewer;
 
 
 		}
-
-
+	    
+	    
+	    
+/**
+ *   Method to deduct quantity of sold stock from  Inventory Stock quantity	    
+ */
+ 
+     void deductInv() {
+    	 
+    	 PreparedStatement pst2;
+    	 PreparedStatement pst3;
+    	 ResultSet rs2;
+    	 
+    	 
+    	 dftm = (DefaultTableModel) table.getModel();
+    	 int j = dftm.getRowCount();
+    	 
+    	 	for(int i=0;i<j;i++) {
+    	 		
+    	   	String sale_prodname = (String)table.getValueAt(i,0);
+    		int sale_qty = Integer.parseInt((String) table.getValueAt(i,1)) ;
+    		
+    		
+    		connect();
+    		
+    		
+    		 try { 
+    			 
+    			 String invquery = " SELECT `Quantity` FROM  Inventory WHERE `Prod_Name` = '"+sale_prodname+"' ;";
+    			 
+    			 pst2 = con.prepareStatement(invquery);
+    			 rs2 = pst2.executeQuery();
+    			 rs2.next();
+    			 
+    			 int invqty = rs2.getInt("Quantity");
+    			 int nqt  = invqty - sale_qty;
+    			 
+    			 String updquery = "UPDATE Inventory SET `Quantity` = "+nqt+" WHERE `Prod_Name` = '"+sale_prodname+"' ; ";
+    			 
+    			 pst3 = con.prepareStatement(updquery);
+    			 pst3.executeUpdate();
+    			 
+    			 con.close();
+				
+			} catch (SQLException e) {
+				
+				e.printStackTrace();
+				
+			}
+    	 }
+ 
+		
+    	 
+     }
+     
+     
+     
 
 }

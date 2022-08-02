@@ -4,10 +4,8 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,7 +29,9 @@ class AddUser  extends JFrame{
 	Connection con;
 	private JTextField textFieldSetStatus;
 
-	 //Icon icon = new ImageIcon("C:\\setting.png");
+	/**
+	 *  Create the frame.
+	 */
 
 	AddUser(){
 
@@ -83,8 +83,6 @@ class AddUser  extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-			
-
 				try {
 					
 					String newUsername = textFieldSetUsername.getText();
@@ -95,18 +93,18 @@ class AddUser  extends JFrame{
 					boolean n2 = newUserPass.isEmpty();
 					boolean n3 = newUserStatus.isEmpty();
 					
-					System.out.println(newUsername);
-					
-					System.out.println(n1);
-					System.out.println(n2);
-					System.out.println(n3);
+		
 					
 					if (n1 || n2 || n3) {
-						JOptionPane.showMessageDialog(null,"Please enter valid info"," Columns cannot be blank",JOptionPane.ERROR_MESSAGE);
+						
+						JOptionPane.showMessageDialog(null,"Please enter valid info"," Fields cannot be blank",JOptionPane.ERROR_MESSAGE);
+						
 						return;
 						
+						
 					} else {
-						connect();
+						
+						con = SaleSystem.connect();
 
 						String svquery = "INSERT INTO `Users`(Username,Password,Status)VALUES(?,?,?)";
 
@@ -123,20 +121,15 @@ class AddUser  extends JFrame{
 					}
 					
 
-					
-
-
 				} catch (SQLException e1) {
 					
 					e1.printStackTrace();
 				}catch(NumberFormatException e2) {
 					
-					JOptionPane.showMessageDialog(null,"Please enter valid info"," Columns cannot be blank",JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null,"Please enter valid info"," Fields cannot be blank",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
 					
-					
-				
 
 				JOptionPane.showMessageDialog(null,"New User Added","Record Saved",JOptionPane.INFORMATION_MESSAGE);
 				setVisible(false);
@@ -151,25 +144,7 @@ class AddUser  extends JFrame{
 	}
 
 
-	     void connect() {
-
-		 String url ="jdbc:mysql://localhost:3306/AGS";
-		 String username ="root";
-		 String password ="Hero1234";
-
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			con =  DriverManager.getConnection(url, username, password);
-
-		} catch (ClassNotFoundException e) {
-
-			e.printStackTrace();
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		}
-
-	}
+	
 
 
 }

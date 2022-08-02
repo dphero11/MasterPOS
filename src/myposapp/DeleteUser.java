@@ -5,7 +5,6 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
 import java.sql.SQLException;
@@ -18,7 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
-class DeleteUser extends JFrame{
+
+	class DeleteUser extends JFrame{
 
 
 		/**
@@ -30,7 +30,7 @@ class DeleteUser extends JFrame{
 		private JButton delbtn;
 		private JLabel lblDelUser;
 
-		static Connection con;
+		Connection con;
 		PreparedStatement dlpst;
 		int rsd;
 
@@ -75,7 +75,7 @@ class DeleteUser extends JFrame{
 				String delUser = textFieldDelUser.getText();
 			
 					
-					connect();
+					con = SaleSystem.connect();
 
 					String delquery = "DELETE FROM Users WHERE `Username` = ?";
 
@@ -97,7 +97,7 @@ class DeleteUser extends JFrame{
 						JOptionPane.showMessageDialog( null," No Record Found ! ","Delete Failed  ",JOptionPane.ERROR_MESSAGE);
 
 					}
-					//con.close();
+					con.close();
 					
 					
 				
@@ -116,25 +116,5 @@ class DeleteUser extends JFrame{
 	}
 
 
-	static void connect() {
-
-		 String url ="jdbc:mysql://localhost:3306/AGS";
-		 String username ="root";
-		 String password ="Hero1234";
-
-		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			con =  DriverManager.getConnection(url, username, password);
-
-
-		} catch (ClassNotFoundException e) {
-
-			e.printStackTrace();
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		}
-
-	}
 
 }

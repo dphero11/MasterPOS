@@ -58,17 +58,24 @@
 	<pageHeader>
 		<band height="72" splitType="Stretch">
 			<staticText>
-				<reportElement x="0" y="10" width="555" height="40" uuid="223fb53d-00a9-4434-bd79-e16dbd0d0cca"/>
+				<reportElement x="30" y="10" width="300" height="40" uuid="223fb53d-00a9-4434-bd79-e16dbd0d0cca"/>
 				<textElement>
 					<font size="23"/>
 				</textElement>
-				<text><![CDATA[INVENTORY REPORT FOR MONTH OF JUNE, 2022.]]></text>
+				<text><![CDATA[INVENTORY REPORT FOR :]]></text>
 			</staticText>
 			<line>
 				<reportElement x="0" y="60" width="555" height="1" uuid="6e2069bd-bf74-40c1-a283-f29746616860">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 			</line>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="340" y="10" width="204" height="40" uuid="94895c7a-8ae7-4ea7-8a6c-409a02da7502"/>
+				<textElement>
+					<font size="23"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -161,9 +168,9 @@
 		</band>
 	</columnFooter>
 	<pageFooter>
-		<band height="38" splitType="Stretch">
+		<band height="50" splitType="Stretch">
 			<componentElement>
-				<reportElement x="232" y="0" width="78" height="30" uuid="7385176b-04b5-4451-bdf7-a5b32c7d4f41"/>
+				<reportElement x="232" y="10" width="78" height="30" uuid="7385176b-04b5-4451-bdf7-a5b32c7d4f41"/>
 				<jr:barbecue xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" type="2of7" drawText="false" checksumRequired="false">
 					<jr:codeExpression><![CDATA["1234"]]></jr:codeExpression>
 				</jr:barbecue>
@@ -171,6 +178,6 @@
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="42" splitType="Stretch"/>
+		<band height="26" splitType="Stretch"/>
 	</summary>
 </jasperReport>
