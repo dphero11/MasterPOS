@@ -55,7 +55,7 @@ public class AddStock extends JFrame {
 
 	AddStock(){
 
-		setTitle("NEW ADD STOCK");
+		setTitle("ADD NEW PRODUCT(S)");
 		getContentPane().setLayout(null);
 		setVisible(false);
 		setResizable(false);
@@ -147,57 +147,65 @@ public class AddStock extends JFrame {
 				String pquantity = textQuantity.getText();
 				String price = textPrice.getText();
 				FileInputStream selected_file = null;
+				
+				if(prodname.length()==0||pquantity.length()==0||price.length()==0) {
+					
+					JOptionPane.showMessageDialog(null,"Field(s) cannot be empty !","ERROR",JOptionPane.ERROR_MESSAGE);
+				}else {
+					
 
-				try {
+					try {
 
-					if(file != null) {
+						if(file != null) {
 
-						selected_file = new FileInputStream(upfile.getSelectedFile());
+							selected_file = new FileInputStream(upfile.getSelectedFile());
 
-					}else {
+						}else {
 
-						selected_file = null;
+							selected_file = null;
 
-						}
+							}
 
-				} catch (FileNotFoundException e2) {
+					} catch (FileNotFoundException e2) {
 
-					e2.printStackTrace();
+						e2.printStackTrace();
+					}
+
+
+						String mainrand = myrandom();
+
+						con = SaleSystem.connect();
+
+					try {
+
+						String addquery = "INSERT INTO Inventory_2(Prod_Code,Prod_Name,Quantity,Price,Picture)VALUES(?,?,?,?,?)";
+						PreparedStatement pst = con.prepareStatement(addquery);
+
+						pst.setString(1,mainrand);
+						pst.setString(2,prodname);
+						pst.setString(3,pquantity);
+						pst.setString(4,price);
+						pst.setBinaryStream(5,selected_file);
+						pst.execute();
+
+						con.close();
+
+					} catch (SQLException e1) {
+
+						e1.printStackTrace();
+					}
+
+						 JOptionPane.showMessageDialog(null,"Product with ID "+mainrand+" Saved !","Done",JOptionPane.INFORMATION_MESSAGE);
+
+						 textProdname.setText("");
+						 textQuantity.setText("");
+						 textPrice.setText("");
+						 btnUpload.setText("UPLOAD");
+						 btnUpload.setForeground(Color.BLACK);
+						 lblPic.setIcon(null);
+					
 				}
-
-
-					String mainrand = myrandom();
-
-					con = SaleSystem.connect();
-
-				try {
-
-					String addquery = "INSERT INTO Inventory_2(Prod_Code,Prod_Name,Quantity,Price,Picture)VALUES(?,?,?,?,?)";
-					PreparedStatement pst = con.prepareStatement(addquery);
-
-					pst.setString(1,mainrand);
-					pst.setString(2,prodname);
-					pst.setString(3,pquantity);
-					pst.setString(4,price);
-					pst.setBinaryStream(5,selected_file);
-					pst.execute();
-
-					con.close();
-
-				} catch (SQLException e1) {
-
-					e1.printStackTrace();
-				}
-
-					 JOptionPane.showMessageDialog(null,"Product with ID "+mainrand+" Saved !","Done",JOptionPane.INFORMATION_MESSAGE);
-
-					 textProdname.setText("");
-					 textQuantity.setText("");
-					 textPrice.setText("");
-					 btnUpload.setText("UPLOAD");
-					 btnUpload.setForeground(Color.BLACK);
-					 lblPic.setIcon(null);
-
+					
 			}
 		});
 

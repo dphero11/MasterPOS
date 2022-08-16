@@ -134,26 +134,40 @@ public class UpdateInventory extends JFrame {
 
 				String tname = textField_Prodname.getText();
 				String tqty = textField_Qty.getText();
-				con = SaleSystem.connect();
-				String query02 = "UPDATE Inventory_2 SET Quantity = Quantity +'"+tqty+"' WHERE Prod_Name = '"+tname+"'";
+				
+					if(tqty.length()==0) {
+						
+						JOptionPane.showMessageDialog(null,"Field(s) cannot be empty !","ERROR",JOptionPane.ERROR_MESSAGE);
+					}else {
+						
+						con = SaleSystem.connect();
+						
+						
+						String query02 = "UPDATE Inventory_2 SET Quantity = Quantity +'"+tqty+"' WHERE Prod_Name = '"+tname+"'";
 
-				try {
+						try {
 
-					PreparedStatement pstmt2 = con.prepareStatement(query02);
-					pstmt2.executeUpdate();
-					con.close();
-					JOptionPane.showMessageDialog(null,"SUCCESS","Columns Updated",JOptionPane.INFORMATION_MESSAGE);
+							PreparedStatement pstmt2 = con.prepareStatement(query02);
+							pstmt2.executeUpdate();
+							con.close();
+							JOptionPane.showMessageDialog(null,"SUCCESS","Columns Updated",JOptionPane.INFORMATION_MESSAGE);
 
-					textField_Prodcode.setText("");
-					textField_Prodname.setText("");
-					textField_Qty.setText("");
-					textField_Price.setText("");
+							textField_Prodcode.setText("");
+							textField_Prodname.setText("");
+							textField_Qty.setText("");
+							textField_Price.setText("");
 
 
-				} catch (SQLException e1) {
+						} catch (SQLException e1) {
 
-					e1.printStackTrace();
-				}
+							e1.printStackTrace();
+						}
+						
+						
+					}
+				
+				
+			
 
 			}
 		});
