@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -45,7 +46,7 @@ class AddUser  extends JFrame{
 
 		JPanel panel = new JPanel();
 		panel.setBounds(6, 6, 528, 360);
-		panel.setBackground(Color.DARK_GRAY);
+		panel.setBackground(Color.LIGHT_GRAY);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 
@@ -84,26 +85,26 @@ class AddUser  extends JFrame{
 			public void actionPerformed(ActionEvent e) {
 
 				try {
-					
+
 					String newUsername = textFieldSetUsername.getText();
 					String newUserPass = textFieldSetUserPassword.getText();
 					String newUserStatus = textFieldSetStatus.getText();
-					
+
 					boolean n1 =  newUsername.isEmpty();
 					boolean n2 = newUserPass.isEmpty();
 					boolean n3 = newUserStatus.isEmpty();
-					
-		
-					
+
+
+
 					if (n1 || n2 || n3) {
-						
+
 						JOptionPane.showMessageDialog(null,"Please enter valid info"," Fields cannot be blank",JOptionPane.ERROR_MESSAGE);
-						
+
 						return;
-						
-						
+
+
 					} else {
-						
+
 						con = SaleSystem.connect();
 
 						String svquery = "INSERT INTO `Users`(Username,Password,Status)VALUES(?,?,?)";
@@ -119,17 +120,17 @@ class AddUser  extends JFrame{
 
 						con.close();
 					}
-					
+
 
 				} catch (SQLException e1) {
-					
+
 					e1.printStackTrace();
 				}catch(NumberFormatException e2) {
-					
+
 					JOptionPane.showMessageDialog(null,"Please enter valid info"," Fields cannot be blank",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-					
+
 
 				JOptionPane.showMessageDialog(null,"New User Added","Record Saved",JOptionPane.INFORMATION_MESSAGE);
 				setVisible(false);
@@ -144,7 +145,7 @@ class AddUser  extends JFrame{
 	}
 
 
-	
+
 
 
 }

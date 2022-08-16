@@ -14,11 +14,10 @@ public static void main(String[] args) {
 		@Override
 		public void run() {
 			try {
+
 				Login login  = new Login();
 				login.setVisible(true);
 
-				//salesystem.setVisible(false);
-				//admincontrol.setVisible(false);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -28,4 +27,7 @@ public static void main(String[] args) {
 
 
 	}
+
+
+
 }

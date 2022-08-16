@@ -9,9 +9,10 @@ import java.util.HashMap;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.WindowConstants;
 import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -31,17 +32,17 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 		/**
 		 *
 		 */
-		 
+
 		private static final long serialVersionUID = -5148290466842511860L;
 
 		UtilDateModel model = new UtilDateModel();
 		JDatePanelImpl dpi = new JDatePanelImpl(model);
 		JDatePickerImpl jdp = new JDatePickerImpl(dpi, new MyCal());
-		String datee;
+		String sdate;
 
 		Connection con;
 		int reportID;
-	
+
 		    AdminControl() {
 
 			new JFrame("Administrator Settings");
@@ -53,9 +54,8 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 			setLocationRelativeTo(null);
 			getContentPane().setLayout(null);
 
-
 			JPanel panel = new JPanel();
-			panel.setBackground(Color.BLUE);
+			panel.setBackground(Color.LIGHT_GRAY);
 			panel.setBounds(6, 6, 608, 480);
 			getContentPane().add(panel);
 			panel.setLayout(null);
@@ -71,7 +71,7 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
-					report();
+					reportinv();
 
 				}
 			});
@@ -84,11 +84,21 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 			btnSales.addActionListener(new ActionListener() {
 				@Override
 				public void actionPerformed(ActionEvent e) {
+
 					String selectedDate = jdp.getJFormattedTextField().getText();
-			        datee =	selectedDate.toString();
 
-						reportsales(datee);
+					sdate =	selectedDate.toString();
 
+
+					if(sdate.length() == 10) {
+
+						reportsales(sdate);
+
+					}else {
+
+						System.out.println("Error Occured");
+						JOptionPane.showMessageDialog(null,"Please Choose a Date","ERROR",JOptionPane.ERROR_MESSAGE);
+					}
 				}
 			});
 			btnSales.setFont(new Font("Lucida Grande", Font.BOLD, 13));
@@ -96,6 +106,7 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 			panel.add(btnSales);
 
 			JButton btnlogout = new JButton("Logout");
+			btnlogout.setBackground(Color.CYAN);
 			btnlogout.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 			btnlogout.addActionListener(new ActionListener() {
 				@Override
@@ -107,7 +118,7 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 				}
 			});
-			btnlogout.setBounds(6, 318, 136, 44);
+			btnlogout.setBounds(6, 340, 136, 44);
 			panel.add(btnlogout);
 
 			JButton btnUsrMgt = new JButton("Manage Users");
@@ -117,29 +128,47 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 					ManageUsers manageUsers = new ManageUsers();
 					manageUsers.setVisible(true);
+
 				}
 			});
 			btnUsrMgt.setFont(new Font("Lucida Grande", Font.BOLD, 13));
 			btnUsrMgt.setBounds(6, 61, 136, 44);
 			panel.add(btnUsrMgt);
-			
+
 			JButton btnUpdateStock = new JButton("Update Stock");
 			btnUpdateStock.addActionListener(new ActionListener() {
+				@Override
 				public void actionPerformed(ActionEvent e) {
-					
-					AddInventory adinv = new AddInventory();
-					adinv.setVisible(true);
+
+					UpdateInventory upinv = new UpdateInventory();
+					upinv.setVisible(true);
+
 				}
 			});
 			btnUpdateStock.setFont(new Font("Lucida Grande", Font.BOLD, 13));
-			btnUpdateStock.setBounds(6, 231, 136, 44);
+			btnUpdateStock.setBounds(6, 229, 136, 44);
 			panel.add(btnUpdateStock);
+
+			JButton btnAddNewProducts = new JButton("Add New Product");
+			btnAddNewProducts.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+
+					AddStock newadd = new AddStock();
+					newadd.setVisible(true);
+				}
+			});
+			btnAddNewProducts.setFont(new Font("Lucida Grande", Font.BOLD, 13));
+			btnAddNewProducts.setBounds(6, 284, 136, 44);
+			panel.add(btnAddNewProducts);
 
 		}
 
+/**
+ * This method displays the Inventory Report.
+ */
 
-
-	void report() {
+	void reportinv() {
 
 			HashMap<String, Object> hm = new HashMap<>();
 
@@ -164,6 +193,11 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 			}
 		}
 
+/**
+ * This method takes the date of sale as a parameter
+ * to print out Daily sales of each product.
+ * @param saledate
+ */
 
 	 void reportsales(String saledate) {
 
@@ -186,7 +220,6 @@ import net.sourceforge.jdatepicker.impl.UtilDateModel;
 
 					e.printStackTrace();
 				}
-				
+
 			}
-	 
 }

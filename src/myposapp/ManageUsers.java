@@ -39,7 +39,7 @@ import javax.swing.WindowConstants;
 			getContentPane().setLayout(null);
 
 			JPanel umpanel = new JPanel();
-			umpanel.setBackground(Color.BLUE);
+			umpanel.setBackground(Color.LIGHT_GRAY);
 			umpanel.setBounds(6, 6, 608, 282);
 			getContentPane().add(umpanel);
 			umpanel.setLayout(null);
@@ -66,7 +66,6 @@ import javax.swing.WindowConstants;
 
 					DeleteUser  delUser = new DeleteUser();
 					delUser.setVisible(true);
-						
 
 				}
 			});
@@ -81,14 +80,11 @@ import javax.swing.WindowConstants;
 					// add code to dispose current frame and show the AdminControl Frame
 					dispose();
 
-
-
 				}
 			});
-			
+
 			btnprevious.setBounds(185, 228, 203, 37);
 			umpanel.add(btnprevious);
-
 
 		}
 

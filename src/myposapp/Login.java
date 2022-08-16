@@ -34,7 +34,7 @@ import javax.swing.border.EmptyBorder;
 		private JTextField username_textField;
 		private JPasswordField passwordField;
 
-		 
+
 		 PreparedStatement pst;
 		 ResultSet rs;
 
@@ -94,7 +94,6 @@ import javax.swing.border.EmptyBorder;
 					}
 				});
 				login_btn.setFont(new Font("Lucida Grande", Font.BOLD | Font.ITALIC, 13));
-				//login_btn.setForeground(Color.BLACK);
 				login_btn.addActionListener(new ActionListener() {
 					@Override
 					public void actionPerformed(ActionEvent e) {
@@ -132,15 +131,14 @@ import javax.swing.border.EmptyBorder;
 													salesys.setVisible(true);
 												}
 
-												
+
 										}else {
 											JOptionPane.showMessageDialog(null,"Incorrect Username or Password","Error",JOptionPane.ERROR_MESSAGE);
 										}
 									} catch (HeadlessException | SQLException e1) {
-										
+
 										e1.printStackTrace();
 									}
-
 
 					}
 				});
@@ -148,18 +146,15 @@ import javax.swing.border.EmptyBorder;
 				login_btn.setBounds(295, 245, 100, 29);
 				contentPane.add(login_btn);
 			}
+	
+	/**
+	 * This method handles the user login operation.
+	 */
 
-		 		
-		 		
+	private void logon() {
 
- private void logon() {
-
-	 	
-	 
 		String txtusername = username_textField.getText();
 		String txtpassword = String.valueOf(passwordField.getPassword());
-
-				
 
 				try {
 
@@ -167,8 +162,6 @@ import javax.swing.border.EmptyBorder;
 
 						String query  = "SELECT * FROM Users WHERE `Username` = '"+txtusername+"' AND `Password` = '"+txtpassword+"' ";
 
-							//con = DriverManager.getConnection();
-							
 							pst = con.prepareStatement(query);
 
 							rs = pst.executeQuery();
@@ -196,16 +189,16 @@ import javax.swing.border.EmptyBorder;
 						}else {
 							JOptionPane.showMessageDialog(null,"Incorrect Username or Password","Error",JOptionPane.ERROR_MESSAGE);
 						}
-						
+
 						con.close();
-						
+
 					} catch (HeadlessException | SQLException e1) {
-						
+
 						e1.printStackTrace();
 					}
 
 
- }
+ 	}
 
 
 

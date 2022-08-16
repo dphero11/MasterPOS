@@ -6,7 +6,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-
 import java.sql.SQLException;
 
 import javax.swing.JButton;
@@ -46,7 +45,7 @@ import javax.swing.WindowConstants;
 	setVisible(false);
 
 	delpanel = new JPanel();
-	delpanel.setBackground(Color.BLUE);
+	delpanel.setBackground(Color.LIGHT_GRAY);
 	delpanel.setBounds(6, 6, 468, 180);
 	getContentPane().add(delpanel);
 	delpanel.setLayout(null);
@@ -73,8 +72,8 @@ import javax.swing.WindowConstants;
 			try {
 
 				String delUser = textFieldDelUser.getText();
-			
-					
+
+
 					con = SaleSystem.connect();
 
 					String delquery = "DELETE FROM Users WHERE `Username` = ?";
@@ -85,30 +84,25 @@ import javax.swing.WindowConstants;
 					dlpst.setString(1,delUser);
 
 					rsd = dlpst.executeUpdate();
-					
+
 					if(!(rsd==0)) {
-						
+
 						JOptionPane.showMessageDialog(null,"User Deleted","Record Deleted",JOptionPane.INFORMATION_MESSAGE);
 						setVisible(false);
 						System.out.println(" This really run");
-						
+
 					}else {
-						
+
 						JOptionPane.showMessageDialog( null," No Record Found ! ","Delete Failed  ",JOptionPane.ERROR_MESSAGE);
 
 					}
 					con.close();
-					
-					
-				
 
 			} catch (SQLException e1) {
-				
+
 				e1.printStackTrace();
 			}
 
-			
-			
 			}
 
 		});

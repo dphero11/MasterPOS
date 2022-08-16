@@ -9,7 +9,7 @@ import javax.swing.JFormattedTextField.AbstractFormatter;
 public class MyCal extends AbstractFormatter {
 
     /**
-	 *
+	 * This class formats the date model.
 	 */
 	private static final long serialVersionUID = 1L;
 	private String datePattern = "yyyy-MM-dd";

@@ -5,12 +5,16 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -23,6 +27,8 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -34,6 +40,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
@@ -51,6 +58,7 @@ import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
+
 
 
  class SaleSystem extends JFrame {
@@ -84,19 +92,20 @@ import net.sf.jasperreports.view.JasperViewer;
 	private JLabel lblPrice;
 	private JLabel lblQty;
 	private JLabel lblAmount;
+	private JLabel imglbl;
 
 	private JScrollPane scrollPane;
 	private JTable table;
 
-	static int NumRows = 0;
-	static int NumCols = 4;
+	final static int NumRows = 0;
+	final static int NumCols = 4;
 	private String[] col_name = {"Description","Quantity","Price","Amount"};
 
 	static Connection con;
 	PreparedStatement pst;
 	PreparedStatement pst1;
 	ResultSet rs;
-	
+
 	int reportID;
 
 	Instant instant = Instant.now();
@@ -137,7 +146,7 @@ import net.sf.jasperreports.view.JasperViewer;
 
 
 	 static Connection connect() {
-		  
+
 		 String url ="jdbc:mysql://localhost:3306/AGS";
 		 String username ="root";
 		 String password ="Hero1234";
@@ -146,7 +155,7 @@ import net.sf.jasperreports.view.JasperViewer;
 
 			Class.forName("com.mysql.cj.jdbc.Driver");
 			con =  DriverManager.getConnection(url, username, password);
-		
+
 		} catch (ClassNotFoundException e) {
 
 			e.printStackTrace();
@@ -157,6 +166,9 @@ import net.sf.jasperreports.view.JasperViewer;
 		return con;
 
 	}
+	 /**
+	  * This method calculates the balance after the payment.
+	  */
 
 	   void balance () {
 
@@ -191,7 +203,7 @@ import net.sf.jasperreports.view.JasperViewer;
 
 		}else {
 
-			
+
 			try {
 
 				String query = "INSERT INTO `Sales`(Subtotal,Pay,Balance,Date)VALUES(?,?,?,?)";
@@ -237,8 +249,8 @@ import net.sf.jasperreports.view.JasperViewer;
 							pst1.setString(5,total);
 							pst1.executeUpdate();
 				  }
-						
-							deductInv(); 
+
+							deductInv();
 
 							con.close();
 
@@ -288,7 +300,7 @@ import net.sf.jasperreports.view.JasperViewer;
 		panel_1 = new JPanel();
 		panel_1.setBorder(new SoftBevelBorder(BevelBorder.RAISED, null, null, null, null));
 		panel_1.setBackground(Color.GRAY);
-		panel_1.setBounds(6, 6, 505, 163);
+		panel_1.setBounds(6, 6, 505, 176);
 		mainPanel.add(panel_1);
 		panel_1.setLayout(null);
 
@@ -329,8 +341,6 @@ import net.sf.jasperreports.view.JasperViewer;
 
 		txtPcode = new JTextField();
 		txtPcode.addKeyListener(new KeyAdapter() {
-
-
 			@Override
 			  public void keyPressed(KeyEvent e) {
 
@@ -340,7 +350,7 @@ import net.sf.jasperreports.view.JasperViewer;
 
 					 try {
 
-						String query = "Select * from Inventory WHERE `Prod_Code` = ?";
+						String query = "Select * from Inventory_2 WHERE `Prod_Code` = ?";
 						pst = con.prepareStatement(query);
 						pst.setString(1, pcode);
 						rs = pst.executeQuery();
@@ -356,8 +366,37 @@ import net.sf.jasperreports.view.JasperViewer;
 							 String pname = rs.getString("Prod_Name");
 							 String price = rs.getString("Price");
 
-							 txtPname.setText(pname.trim());
-							 txtPrice.setText(price.trim());
+							 Blob img = rs.getBlob("Picture");
+
+							 if(img==null) {
+
+								 txtPname.setText(pname.trim());
+								 txtPrice.setText(price.trim());
+
+							 }else {
+
+								 byte[] img1 = img.getBytes(1, (int) img.length());
+								 ByteArrayInputStream bins = new ByteArrayInputStream(img1);
+
+								 Image icimg = null;
+
+								 try {
+
+									 	icimg = ImageIO.read(bins);
+
+								} catch (IOException e1) {
+
+									e1.printStackTrace();
+								}
+
+								 ImageIcon ii = new ImageIcon(new ImageIcon(icimg).getImage().getScaledInstance(90, 90, Image.SCALE_DEFAULT));
+
+								 txtPname.setText(pname.trim());
+								 txtPrice.setText(price.trim());
+								 imglbl.setIcon(ii);
+
+							 }
+
 
 						}
 
@@ -366,10 +405,9 @@ import net.sf.jasperreports.view.JasperViewer;
 
 						e1.printStackTrace();
 
-					}
+						}
 
 				 }
-
 
 			}
 		});
@@ -450,6 +488,7 @@ import net.sf.jasperreports.view.JasperViewer;
 					txtQty.setValue(0);
 					txtPrice.setText("");
 					txtAmount.setText("");
+					imglbl.setIcon(null);
 					txtPcode.requestFocusInWindow();
 
 			}
@@ -497,6 +536,7 @@ import net.sf.jasperreports.view.JasperViewer;
 
 				 	txtTotal.setText(String.valueOf(sum));
 				 	txtPcode.requestFocusInWindow();
+
 			}
 
 
@@ -506,6 +546,11 @@ import net.sf.jasperreports.view.JasperViewer;
 		btnCLR.setFont(new Font("Tahoma", Font.BOLD, 15));
 		btnCLR.setBounds(378, 75, 88, 44);
 		panel_1.add(btnCLR);
+
+		imglbl = new JLabel("");
+		imglbl.setHorizontalAlignment(SwingConstants.CENTER);
+		imglbl.setBounds(6, 66, 99, 93);
+		panel_1.add(imglbl);
 
 		panel_2 = new JPanel();
 		panel_2.setBorder(new SoftBevelBorder(BevelBorder.RAISED, null, null, null, null));
@@ -587,19 +632,19 @@ import net.sf.jasperreports.view.JasperViewer;
 		btnLogout.setBounds(72, 370, 117, 39);
 		panel_2.add(btnLogout);
 
-		
+
 		scrollPane = new JScrollPane();
-		scrollPane.setBounds(6, 169, 505, 307);
+		scrollPane.setBounds(6, 182, 505, 294);
 		mainPanel.add(scrollPane);
 
-		
+
 		table = new JTable(NumRows,NumCols) {
 
 			private static final long serialVersionUID = 1L;
 
 			@Override
 		    public boolean isCellEditable(int NumRows, int NumCols) {
-		       
+
 		       return false;
 		    }
 
@@ -615,62 +660,51 @@ import net.sf.jasperreports.view.JasperViewer;
 
 
 		}
-	    
-	    
-	    
+
 /**
- *   Method to deduct quantity of sold stock from  Inventory Stock quantity	    
+ *   Method to deduct quantity of sold stock from  Inventory Stock quantity
  */
- 
+
      void deductInv() {
-    	 
+
     	 PreparedStatement pst2;
     	 PreparedStatement pst3;
     	 ResultSet rs2;
-    	 
-    	 
+
     	 dftm = (DefaultTableModel) table.getModel();
     	 int j = dftm.getRowCount();
-    	 
+
     	 	for(int i=0;i<j;i++) {
-    	 		
+
     	   	String sale_prodname = (String)table.getValueAt(i,0);
     		int sale_qty = Integer.parseInt((String) table.getValueAt(i,1)) ;
-    		
-    		
+
     		connect();
-    		
-    		
-    		 try { 
-    			 
-    			 String invquery = " SELECT `Quantity` FROM  Inventory WHERE `Prod_Name` = '"+sale_prodname+"' ;";
-    			 
+
+    		 try {
+
+    			 String invquery = " SELECT `Quantity` FROM  Inventory_2 WHERE `Prod_Name` = '"+sale_prodname+"' ;";
+
     			 pst2 = con.prepareStatement(invquery);
     			 rs2 = pst2.executeQuery();
     			 rs2.next();
-    			 
+
     			 int invqty = rs2.getInt("Quantity");
     			 int nqt  = invqty - sale_qty;
-    			 
-    			 String updquery = "UPDATE Inventory SET `Quantity` = "+nqt+" WHERE `Prod_Name` = '"+sale_prodname+"' ; ";
-    			 
+
+    			 String updquery = "UPDATE Inventory_2 SET `Quantity` = "+nqt+" WHERE `Prod_Name` = '"+sale_prodname+"' ; ";
+
     			 pst3 = con.prepareStatement(updquery);
     			 pst3.executeUpdate();
-    			 
+
     			 con.close();
-				
+
 			} catch (SQLException e) {
-				
+
 				e.printStackTrace();
-				
+
 			}
     	 }
- 
-		
-    	 
-     }
-     
-     
-     
 
+     }
 }
